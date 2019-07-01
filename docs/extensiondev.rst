@@ -4,9 +4,8 @@ Flask Extension Development
 ===========================
 
 Flask, being a microframework, often requires some repetitive steps to get
-a third party library working.  Because very often these steps could be
-abstracted to support multiple projects the `Flask Extension Registry`_
-was created.
+a third party library working. Many such extensions are already available
+on `PyPI <https://pypi.org/search/?c=Framework+%3A%3A+Flask>`_.
 
 If you want to create your own Flask extension for something that does not
 exist yet, this guide to extension development will help you get your
@@ -197,8 +196,8 @@ So here's what these lines of code do:
     instantiated without requiring an app object.  This method supports the
     factory pattern for creating applications.  The ``init_app`` will set the
     configuration for the database, defaulting to an in memory database if
-    no configuration is supplied.  In addition, the ``init_app`` method attaches
-    the ``teardown`` handler.
+    no configuration is supplied.  In addition, the ``init_app`` method
+    attaches the ``teardown`` handler.
 3.  Next, we define a ``connect`` method that opens a database connection.
 4.  Finally, we add a ``connection`` property that on first access opens
     the database connection and stores it on the context.  This is also
@@ -287,7 +286,7 @@ also avoids having multiple developers working in isolation on pretty much the
 same problem.
 
 Remember: good API design is hard, so introduce your project on the
-mailinglist, and let other developers give you a helping hand with
+mailing list, and let other developers give you a helping hand with
 designing the API.
 
 The best Flask extensions are extensions that share common idioms for the
@@ -312,8 +311,8 @@ extension to be approved you have to follow these guidelines:
     or ``python setup.py test``.  For test suites invoked with ``make
     test`` the extension has to ensure that all dependencies for the test
     are installed automatically.  If tests are invoked with ``python setup.py
-    test``, test dependencies can be specified in the :file:`setup.py` file.  The
-    test suite also has to be part of the distribution.
+    test``, test dependencies can be specified in the :file:`setup.py` file.
+    The test suite also has to be part of the distribution.
 3.  APIs of approved extensions will be checked for the following
     characteristics:
 
@@ -328,8 +327,8 @@ extension to be approved you have to follow these guidelines:
 6.  Approved extensions must define all their dependencies in the
     :file:`setup.py` file unless a dependency cannot be met because it is not
     available on PyPI.
-7.  The documentation must use the ``flask`` theme from the `Official
-    Pallets Themes`_.
+7.  The documentation must use the ``flask`` theme from the
+    `Official Pallets Themes`_.
 8.  The setup.py description (and thus the PyPI description) has to
     link to the documentation, website (if there is one) and there
     must be a link to automatically install the development version
@@ -342,4 +341,4 @@ extension to be approved you have to follow these guidelines:
 .. _OAuth extension: https://pythonhosted.org/Flask-OAuth/
 .. _mailinglist: http://flask.pocoo.org/mailinglist/
 .. _IRC channel: http://flask.pocoo.org/community/irc/
-.. _Official Pallets Themes: https://pypi.org/project/pallets-sphinx-themes/
+.. _Official Pallets Themes: https://pypi.org/project/Pallets-Sphinx-Themes/

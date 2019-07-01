@@ -10,7 +10,7 @@ interface, in your virtualenv. Executed from the terminal, this script gives
 access to built-in, extension, and application-defined commands. The ``--help``
 option will give more information about any commands and options.
 
-.. _Click: http://click.pocoo.org/
+.. _Click: https://click.palletsprojects.com/
 
 
 Application Discovery
@@ -68,9 +68,9 @@ parts:
     The ``create_app`` factory in ``hello`` is called with the string ``'dev'``
     as the argument.
 
-If ``FLASK_APP`` is not set, the command will look for a file called
-:file:`wsgi.py` or :file:`app.py` and try to detect an application instance or
-factory.
+If ``FLASK_APP`` is not set, the command will try to import "app" or
+"wsgi" (as a ".py" file, or package) and try to detect an application
+instance or factory.
 
 Within the given import, the command looks for an application instance named
 ``app`` or ``application``, then any application instance. If no instance is
@@ -146,6 +146,25 @@ reloader.
      * Debugger PIN: 223-456-919
 
 
+Watch Extra Files with the Reloader
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+When using development mode, the reloader will trigger whenever your
+Python code or imported modules change. The reloader can watch
+additional files with the ``--extra-files`` option, or the
+``FLASK_RUN_EXTRA_FILES`` environment variable. Multiple paths are
+separated with ``:``, or ``;`` on Windows.
+
+.. code-block:: none
+
+    $ flask run --extra-files file1:dirA/file2:dirB/
+    # or
+    $ export FLASK_RUN_EXTRA_FILES=file1:dirA/file2:dirB/
+    $ flask run
+     * Running on http://127.0.0.1:8000/
+     * Detected change in '/path/to/file1', reloading
+
+
 Debug Mode
 ----------
 
@@ -193,7 +212,7 @@ environment variables. The variables use the pattern
 ``FLASK_COMMAND_OPTION``. For example, to set the port for the run
 command, instead of ``flask run --port 8000``:
 
-.. code-block:: none
+.. code-block:: bash
 
     $ export FLASK_RUN_PORT=8000
     $ flask run
@@ -209,7 +228,7 @@ Disable dotenv
 The ``flask`` command will show a message if it detects dotenv files but
 python-dotenv is not installed.
 
-.. code-block:: none
+.. code-block:: bash
 
     $ flask run
      * Tip: There are .env files present. Do "pip install python-dotenv" to use them.
@@ -221,7 +240,7 @@ a project runner that loads them already. Keep in mind that the
 environment variables must be set before the app loads or it won't
 configure as expected.
 
-.. code-block:: none
+.. code-block:: bash
 
     $ export FLASK_SKIP_DOTENV=1
     $ flask run
@@ -253,7 +272,7 @@ Custom Commands
 The ``flask`` command is implemented using `Click`_. See that project's
 documentation for full information about writing commands.
 
-This example adds the command ``create_user`` that takes the argument
+This example adds the command ``create-user`` that takes the argument
 ``name``. ::
 
     import click
@@ -261,14 +280,14 @@ This example adds the command ``create_user`` that takes the argument
 
     app = Flask(__name__)
 
-    @app.cli.command()
-    @click.argument('name')
+    @app.cli.command("create-user")
+    @click.argument("name")
     def create_user(name):
         ...
 
 ::
 
-    $ flask create_user admin
+    $ flask create-user admin
 
 This example adds the same command, but as ``user create``, a command in a
 group. This is useful if you want to organize multiple related commands. ::
@@ -293,6 +312,61 @@ group. This is useful if you want to organize multiple related commands. ::
 
 See :ref:`testing-cli` for an overview of how to test your custom
 commands.
+
+
+Registering Commands with Blueprints
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If your application uses blueprints, you can optionally register CLI
+commands directly onto them. When your blueprint is registered onto your
+application, the associated commands will be available to the ``flask``
+command. By default, those commands will be nested in a group matching
+the name of the blueprint.
+
+.. code-block:: python
+
+    from flask import Blueprint
+
+    bp = Blueprint('students', __name__)
+
+    @bp.cli.command('create')
+    @click.argument('name')
+    def create(name):
+        ...
+
+    app.register_blueprint(bp)
+
+.. code-block:: text
+
+    $ flask students create alice
+
+You can alter the group name by specifying the ``cli_group`` parameter
+when creating the :class:`Blueprint` object, or later with
+:meth:`app.register_blueprint(bp, cli_group='...') <Flask.register_blueprint>`.
+The following are equivalent:
+
+.. code-block:: python
+
+    bp = Blueprint('students', __name__, cli_group='other')
+    # or
+    app.register_blueprint(bp, cli_group='other')
+
+.. code-block:: text
+
+    $ flask other create alice
+
+Specifying ``cli_group=None`` will remove the nesting and merge the
+commands directly to the application's level:
+
+.. code-block:: python
+
+    bp = Blueprint('students', __name__, cli_group=None)
+    # or
+    app.register_blueprint(bp, cli_group=None)
+
+.. code-block:: text
+
+    $ flask create alice
 
 
 Application Context
@@ -342,7 +416,7 @@ they are installed. Entry points are specified in :file:`setup.py` ::
     )
 
 
-.. _entry point: https://packaging.python.org/tutorials/distributing-packages/#entry-points
+.. _entry point: https://packaging.python.org/tutorials/packaging-projects/#entry-points
 
 Inside :file:`flask_my_extension/commands.py` you can then export a Click
 object::
@@ -411,7 +485,7 @@ script is available. Note that you don't need to set ``FLASK_APP``. ::
     The ``flask`` command, being separate from your code, does not have
     this issue and is recommended in most cases.
 
-.. _console script: https://packaging.python.org/tutorials/distributing-packages/#console-scripts
+.. _console script: https://packaging.python.org/tutorials/packaging-projects/#console-scripts
 
 
 PyCharm Integration

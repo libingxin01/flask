@@ -31,10 +31,11 @@ Given a flask application in myapp.py, use the following command:
 
     $ uwsgi -s /tmp/yourapplication.sock --manage-script-name --mount /yourapplication=myapp:app
 
-The ``--manage-script-name`` will move the handling of ``SCRIPT_NAME`` to uwsgi,
-since it is smarter about that. It is used together with the ``--mount``
-directive which will make requests to ``/yourapplication`` be directed to
-``myapp:app``. If your application is accessible at root level, you can use a
+The ``--manage-script-name`` will move the handling of ``SCRIPT_NAME``
+to uwsgi, since it is smarter about that.
+It is used together with the ``--mount`` directive which will make
+requests to ``/yourapplication`` be directed to ``myapp:app``.
+If your application is accessible at root level, you can use a
 single ``/`` instead of ``/yourapplication``. ``myapp`` refers to the name of
 the file of your flask application (without extension) or the module which
 provides ``app``. ``app`` is the callable inside of your application (usually
@@ -69,4 +70,4 @@ to have it in the URL root its a bit simpler::
 .. _nginx: https://nginx.org/
 .. _lighttpd: https://www.lighttpd.net/
 .. _cherokee: http://cherokee-project.com/
-.. _uwsgi: https://uwsgi-docs.readthedocs.io/
+.. _uwsgi: https://uwsgi-docs.readthedocs.io/en/latest/

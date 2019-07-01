@@ -43,9 +43,9 @@ Incoming Request Data
    .. attribute:: base_url
    .. attribute:: url_root
 
-      Provides different ways to look at the current `IRI
-      <https://tools.ietf.org/html/rfc3987>`_.  Imagine your application is
-      listening on the following application root::
+      Provides different ways to look at the current :rfc:`3987`.
+      Imagine your application is listening on the following application
+      root::
 
           http://www.example.com/myapplication
 
@@ -726,7 +726,7 @@ requests, make sure the default route only handles ``GET``, as redirects
 can't preserve form data. ::
 
    @app.route('/region/', defaults={'id': 1})
-   @app.route('/region/<id>', methods=['GET', 'POST'])
+   @app.route('/region/<int:id>', methods=['GET', 'POST'])
    def region(id):
       pass
 
